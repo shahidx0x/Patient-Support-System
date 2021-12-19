@@ -13,15 +13,19 @@ import java.awt.event.ActionEvent;
 import java.sql.ResultSet;
 import javax.swing.JComboBox;
 
-
-
 public class fg {
 	private JFrame frame;
 	private JPasswordField pass;
 	private JTextField user;
 	private JComboBox<?> cb;
+	public static String uname;
 	
-
+	public static String getUname() {
+		return uname;
+	}
+	public static void setUname(String un) {
+		uname = un;
+	}
 	/**
 	 * Launch the application.
 	 */
@@ -56,6 +60,8 @@ public class fg {
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		frame.getContentPane().setLayout(null);
 		frame.setResizable(false);
+		frame.setSize(469, 314);
+		frame.setLocationRelativeTo(null);  
 		
 		JLabel Headinglvl = new JLabel("Patient Support System");
 		Headinglvl.setFont(new Font("Tahoma", Font.BOLD, 30));
@@ -78,6 +84,7 @@ public class fg {
 			public void actionPerformed(ActionEvent e) {
 				try {
 					DbConnection con = new DbConnection();
+					System.out.println(con);
 					String userName = user.getText();
 					@SuppressWarnings("deprecation")
 					String password = pass.getText();
@@ -87,34 +94,56 @@ public class fg {
 						ResultSet rs = con.s.executeQuery(sql);
 						if(rs.next()) {
 							JOptionPane.showMessageDialog(null, "Patient : "+userName+" Loged in Successfully");
+							setUname(userName);
+							new patientPanel();
+							uio.patientPanel.main(null);
 							frame.setVisible(false);
 						}
 						else
 							JOptionPane.showMessageDialog(null, "Please check user name and password");
-						    frame.setVisible(false);
+	
 					}else if(Role.equals("doctor")) {
 						String sql = "select * from doctor where username = '"+userName+"' and password = '"+password+"'";
 						ResultSet rs = con.s.executeQuery(sql);
 						if(rs.next()) {
 							JOptionPane.showMessageDialog(null, "Doctor : "+userName+" Loged in Successfully");
+							setUname(userName);
+							new doctorPanel();
+							uio.doctorPanel.main(null);
 							frame.setVisible(false);
 						}
 						else
 							JOptionPane.showMessageDialog(null, "Please check user name and password");
-						    frame.setVisible(false);
+			
 					}else if(Role.equals("admin")) {
 						String sql = "select * from admin where username = '"+userName+"' and password = '"+password+"'";
 						ResultSet rs = con.s.executeQuery(sql);
 						if(rs.next()) {
 							JOptionPane.showMessageDialog(null,  "Admin : "+userName+" Loged in Successfully");
+							setUname(userName);
 							frame.setVisible(false);
 							new adminPanel();
 							uio.adminPanel.main(null);
 						}
 						else
 							JOptionPane.showMessageDialog(null, "Please check user name and password");
-					}else {
+					}else if(Role.equals("technetian")) {
+						String sql = "select * from technitian where name = '"+userName+"' and pass = '"+password+"'";
+						ResultSet rs = con.s.executeQuery(sql);
+						if(rs.next()) {
+							frame.setVisible(false);
+							JOptionPane.showMessageDialog(null,  "Technetian : "+userName+" Loged in Successfully");
+							setUname(userName);
+							new technetian();
+							uio.technetian.main(null);
+							
+						}
+						else
+							JOptionPane.showMessageDialog(null, "Please check user name and password");
+					}
+					else {
 						JOptionPane.showMessageDialog(null, "Unknown Error Occured");
+
 					}
 					
 				}catch(Exception error) {
@@ -156,7 +185,7 @@ public class fg {
 		lblNewLabel.setBounds(203, 166, 100, 18);
 		frame.getContentPane().add(lblNewLabel);
 		
-		String d[] = {"patient","doctor","admin"};
+		String d[] = {"patient","doctor","technetian","admin"};
 		cb = new JComboBox(d);
 		cb.setFont(new Font("Tahoma", Font.BOLD, 11));
 		cb.setBounds(203, 186, 196, 22);
@@ -166,6 +195,8 @@ public class fg {
 		lblNewLabel_4.setIcon(new ImageIcon("C:\\Users\\Administrator\\Desktop\\Gradient_builder_2.jpg"));
 		lblNewLabel_4.setBounds(-2, 0, 515, 464);
 		frame.getContentPane().add(lblNewLabel_4);
+		
+		
 		
 	}
 }
